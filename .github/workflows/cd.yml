@@ -1,0 +1,26 @@
+name: CD pipeline 
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: Default 
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3 
+
+    - name: Build the containers 
+      run: |
+        docker-compose build 
+
+    - name: Adding the kubernetes manifests files
+      run: |
+        cd k8s 
+        kubectl apply -f backend-deployment.yml
+        kubectl apply -f backend-service.yml 
+        kubectl apply -f frontend-deployment.yml
+        kubectl apply -f frontend-service.yml
+        kubectl apply -f ingress.yml
