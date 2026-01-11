@@ -2,40 +2,40 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: backend-deployment
-  spec:
-    replicas: 2
-    selector:
-      matchLabels:
+spec: 
+  replicas: 2
+  selector:
+    matchLabels:
+      app: backend
+      tier: api
+  template:
+    metadata:
+      labels:
         app: backend
-        tier: api 
-    template:
-      metadata:
-        labels:
-          app: backend
-          tier: api
-      spec:
-        containers:
-        - name: backend
-          image: order-backend:latest
-          imagePullPolicy: IfNotPresent
-          ports:
-          - containerPort: 8080
-          env:
-          - name: DATABASE_URL
-            valueFrom:
-              secretKeyRef:
-                name: database-secret
-                key: database-url
-          resources:
-            requests:
-              memory: "256Mi"
-              cpu: "250m"
-            limits:
-              memory: "512Mi"
-              cpu: "500m"
-          livenessProbe:
-            httpGet:
-              path: /health 
-              port: 8080
-            initialDelaySeconds: 30
-            periodSeconds: 10
+        tier: api
+    spec:
+      containers:
+      - name: backend
+        image: order-and-inventory-management-backend
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 8080
+        env:
+        - name: DATABASE_URL
+          valueFrom:
+            secretKeyRef:
+              name: database-secret
+              key: database-url
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "250m"
+          limits:
+            memory: "512Mi"
+            cpu: "500m"
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 8080
+          initialDelaySeconds: 30
+          periodSeconds: 10
